@@ -11,6 +11,8 @@ public class MazeTester
 		{
 			maze.mazeGenerationDFS(i);
 			maze.printMaze(i);
-		}
+			System.out.println(maze.printGrid());
+		}	
+		
 	}
 }
