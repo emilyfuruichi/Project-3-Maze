@@ -146,15 +146,19 @@ public class Maze
 					for(int j=0; j<dimension; j++) { //i represents the current row, j represents current col, i*dimension + j = current cell
 						//for each cell in this row, check if north neighbor exists 
 						//to determine whether wall is intact
-						int northX = adjList.get(i*dimension+j).get(0).getX();		//get the x coordinate of where the north neighbor would be if exist
-						int northY = adjList.get(i*dimension+j).get(0).getY() - 1;	//get the y coordinate of where the north neighbor would be if exist
-						if(hasNeighbor(northX, northY, adjList.get(i*dimension+j))) {
-							//if neighbor exists, then there is a path; thus, broken wall
+						if(adjList.get(i*dimension+j).get(0).getCellNum() == 0) {
+							//at the entry point
 							grid += " ";
+						}else {
+							int northX = adjList.get(i*dimension+j).get(0).getX();		//get the x coordinate of where the north neighbor would be if exist
+							int northY = adjList.get(i*dimension+j).get(0).getY() - 1;	//get the y coordinate of where the north neighbor would be if exist
+							if(hasNeighbor(northX, northY, adjList.get(i*dimension+j))) {
+								//if neighbor exists, then there is a path; thus, broken wall
+								grid += " ";
+							}
+							else //no neighbor = wall
+								grid += "-";
 						}
-						else //no neighbor = wall
-							grid += "-";
-						
 						grid += "+";
 					}//end for
 				}//end if
@@ -181,8 +185,9 @@ public class Maze
 		}//end for
 		
 		//print bottom row
+		int count = dimension*2+1;
 		for(int i=0; i<dimension*2+1; i++) {
-			if(i%2 == 0 && i == dimension*2-1)	//at the ending cell
+			if(i == dimension*2-1)	//at the ending cell
 				grid += " ";
 			else if(i%2 == 0)	//at a corner
 				grid += "+";
