@@ -2,16 +2,15 @@ package maze;
 
 public class MazeTester 
 {
-	private static final int[] GRID_SIZE = {2, 3, 4};
+	private static final int[] GRID_SIZE = {2,4,5}; //4,5,6,7,8,10
 	
 	public static void main(String args[])
 	{
-		Maze maze = new Maze();
+		Maze maze;
 		for(int i : GRID_SIZE)
 		{
-			maze.mazeGenerationDFS(i);
-			maze.printMaze(i);
-			System.out.println(maze.printGrid());
+			System.out.println("Printing maze ("+i+"x"+i+"):");
+			maze = new Maze(i);
 		}	
 		
 	}
