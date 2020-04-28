@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class MazeTester 
 {
-	private static final int[] GRID_SIZE = {2,4,5,8}; //4,5,6,7,8,10
+	private static final int[] GRID_SIZE = {2,4,5,7,8}; //4,5,6,7,8,10
 	
 	public static void main(String args[])
 	{
