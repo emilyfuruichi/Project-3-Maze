@@ -9,6 +9,7 @@ public class Cell
 	private int x; //coordinate x increasing to the right
 	private int y; //coordinate y increasing down
 	private int cellNum; //individual cell ID
+	private int parentNum = -1; //cell ID of this cell's parent
 	
 	/**
 	 * for creating interior cells of the maze
@@ -71,4 +72,7 @@ public class Cell
 		//return "[("+x+","+y+"):"+cellNum+"] ";
 		return "["+cellNum+"]";
 	}
+	
+	public void setParentNum(int parID) { parentNum = parID; }
+	public int getParentNum() { return parentNum; }
 }

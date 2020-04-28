@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 
 public class Maze 
 {
 	private ArrayList<LinkedList<Cell>> adjList;
 	private int dimension, numOfCells;
+	private Stack<Integer> solutionPath;
+	private Map<Cell,Integer> dfsSolution;
 	
 	/**
 	 * Creates the adjacency list for storing walls that get broken down
@@ -28,19 +31,41 @@ public class Maze
 		adjList = new ArrayList<LinkedList<Cell>>(); //adjacency list, the first node of each contains that cell's info
 		dimension = size;
 		numOfCells = (int) Math.pow(size, 2);
-		Map<Cell,Integer> solution;
+//		Map<Cell,Integer> solution;
 		
 		createAllWalledMaze();
 		mazeGenerationDFS();
-		//printAdjList();
-		System.out.println("Maze: \n"+printGrid(" ",null)); //will need to print to a file
-		solution = solveMazeDFS();
-		//printMap(solution);
-		System.out.println("DFS: \n"+printGrid(null,solution)); //will need to print to a file
-		//solution = solveMazeBFS();
-		System.out.println(printGrid("#",solution)); //will need to print to a file
-		//System.out.println("BFS: \n"+printGrid(null,solution)); //will need to print to a file
-		//System.out.println(printGrid("#",solution)); //will need to print to a file
+//		printAdjList();
+//		System.out.println("Maze: \n"+printGrid(" ",null, 0)); //will need to print to a file
+//		solution = solveMazeDFS();
+//		printMap(solution);
+//		System.out.println("DFS: \n"+printGrid(null,solution, 0)); //will need to print to a file
+//		solution = solveMazeBFS();
+//		System.out.println(printGrid("#",solution, 0)); //will need to print to a file
+//		System.out.println(printGrid("#",null, 0)); //will need to print to a file
+//		System.out.println("BFS: \n"+printGrid(null,solution)); //will need to print to a file
+//		System.out.println(printGrid("#",solution)); //will need to print to a file
+		
+		
+		dfsSolution = solveMazeDFS();
+		solutionPath = new Stack<Integer>();
+		setSolutionPath();
+		printInitialMaze();
+		printDFS();
+		printShortestPath();
+		
+		
+//		System.out.println(printGrid("#",null, 0)); //will need to print to a file
+
+//		printSolutionPath();
+	}
+	
+	private void setSolutionPath() {
+		int currentID = numOfCells - 1; //starting at ending cell
+		while(currentID != -1) { //traverse the path backwards through the parents of each cell
+			solutionPath.push(adjList.get(currentID).getFirst().getCellNum()); //push the ID of the current cell into stack
+			currentID = adjList.get(currentID).getFirst().getParentNum(); //traverse to parent cell
+		}
 	}
 	
 	private Map<Cell, Integer> solveMazeBFS() 
@@ -60,6 +85,7 @@ public class Maze
 		Cell currentCell = adjList.get(0).getFirst();
 		Stack<Cell> cellStack = new Stack<Cell>();
 		Cell nextCell = null;
+//		int parentID = -1;
 		int order = 0;
 		
 		cellStack.push(currentCell);
@@ -72,6 +98,7 @@ public class Maze
 					&& !sol.containsKey(adjList.get(currentCell.getCellNum()+1).getFirst())) //not visited before
 			{
 				nextCell = adjList.get(currentCell.getCellNum()+1).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
 				cellStack.push(nextCell);
 				//System.out.println("pushed: "+ cellStack.peek());
 				sol.put(nextCell,order++);
@@ -82,6 +109,7 @@ public class Maze
 					&& !sol.containsKey(adjList.get(currentCell.getCellNum()+dimension).getFirst())) //not visited before
 			{
 				nextCell = adjList.get(currentCell.getCellNum()+dimension).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
 				cellStack.push(nextCell);
 				//System.out.println("pushed: "+ cellStack.peek());
 				sol.put(nextCell,order++);
@@ -92,6 +120,7 @@ public class Maze
 					&& !sol.containsKey(adjList.get(currentCell.getCellNum()-1).getFirst())) //not visited before
 			{
 				nextCell = adjList.get(currentCell.getCellNum()-1).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
 				cellStack.push(nextCell);
 				//System.out.println("pushed: "+ cellStack.peek());
 				sol.put(nextCell,order++);
@@ -102,6 +131,7 @@ public class Maze
 					&& !sol.containsKey(adjList.get(currentCell.getCellNum()-dimension).getFirst())) //not visited before
 			{
 				nextCell = adjList.get(currentCell.getCellNum()-dimension).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
 				cellStack.push(nextCell);
 				//System.out.println("pushed: "+ cellStack.peek());
 				sol.put(nextCell,order++);
@@ -140,7 +170,8 @@ public class Maze
 	public void mazeGenerationDFS()
 	{
 		int totalCells = numOfCells-1;
-		Cell currentCell = adjList.get((int)(Math.random() * totalCells)).getFirst();
+		Random rand = new Random(0);
+		Cell currentCell = adjList.get((int)(rand.nextDouble() * totalCells)).getFirst();
 		ArrayList<Cell> neighborCells;
 		int neighborCount;
 		Stack<Cell> cellStack = new Stack<Cell>();
@@ -187,7 +218,8 @@ public class Maze
 				}
 			}
 			
-			int random = (int)(Math.random() * neighborCount); //chose a random neighbor
+			
+			int random = (int)(rand.nextDouble() * neighborCount); //chose a random neighbor
 			if(neighborCount > 0 && !adjList.get(currentCell.getCellNum()).contains(neighborCells.get(random)))
 			{
 				adjList.get(currentCell.getCellNum()).addLast(neighborCells.get(random));
@@ -205,6 +237,35 @@ public class Maze
 	}
 	
 	/*
+	 * Function: Interface method to print the initial view of the grid
+	 * PRE: Maze generated
+	 * Post: None
+	 * Return: None
+	*/
+	public void printInitialMaze() {
+		System.out.println("Maze: \n"+printGrid(" ",null)); //will need to print to a file
+	}
+	
+	/*
+	 * Function: Interface method to print the maze and the nodes visited from the DFS
+	 * PRE: Maze generated
+	 * Post: None
+	 * Return: None
+	*/
+	public void printDFS() {
+		System.out.println("DFS: \n"+printGrid(null,dfsSolution)); //will need to print to a file
+	}
+	
+	/*
+	 * Function: Interface method to print the shortest path of the maze
+	 * PRE: Maze generated
+	 * Post: None
+	 * Return: None
+	*/
+	public void printShortestPath() {
+		System.out.println(printGrid("#",null)); //will need to print to a file
+	}
+	/*
 	 * Print Grid
 	 * for each cell in one row, check its north wall to determine whether if intact
 	 * while on the same row, check its east wall to determine whether if intact
@@ -217,7 +278,8 @@ public class Maze
 	 *  '|' = west/east wall
 	 *  ' ' = cell/broken wall
 	 *  
-	 *  Function: Prints the initial view of the maze
+	 *  Function: Prints the initial view of the maze, the visited cells from DFS,
+	 *  		  the visited cells from BFS, and the shortest path
 	 *  PRE: Adjacency list initialized
 	 *  POST: None
 	 *  Return: String containing maze representation
@@ -286,12 +348,20 @@ public class Maze
 								}
 							}
 						}
+						else if(solutionPath != null) { //printing the shortest path
+							if(solutionPath.contains(adjList.get(currentCellCount).getFirst().getCellNum())) {
+								grid += charInCell;
+							}
+							else
+								grid += " ";
+						}
 						else
 							grid += " ";
 						++currentCellCount;
+						
 						int eastX = adjList.get(i*dimension+j).get(0).getX()+1;		//get the x coordinate of where the east neighbor would be if exist
 						int eastY = adjList.get(i*dimension+j).get(0).getY();		//get the y coordinate of where the east neighbor would be if exist
-						if(hasNeighbor(eastX, eastY, adjList.get(i*dimension+j))) {
+						if(hasNeighbor(eastX, eastY, adjList.get(i*dimension+j))) { //determine if current cell has a path to its east neighbor
 							//if neighbor exists, then there is a path; thus, broken wall
 							grid += " ";
 						}
@@ -305,7 +375,6 @@ public class Maze
 		}//end for
 		
 		//print bottom row
-		int count = dimension*2+1;
 		for(int i=0; i<dimension*2+1; i++) {
 			if(i == dimension*2-1)	//at the ending cell
 				grid += " ";
