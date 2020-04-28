@@ -54,10 +54,6 @@ public class Maze
 		printDFS();
 		printShortestPath();
 		
-		
-//		System.out.println(printGrid("#",null, 0)); //will need to print to a file
-
-//		printSolutionPath();
 	}
 	
 	private void setSolutionPath() {
@@ -237,7 +233,7 @@ public class Maze
 	}
 	
 	/*
-	 * Function: Interface method to print the initial view of the grid
+	 * Function: Interface method to print the initial view of the maze
 	 * PRE: Maze generated
 	 * Post: None
 	 * Return: None
