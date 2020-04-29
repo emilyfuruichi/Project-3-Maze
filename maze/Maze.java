@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Maze
 	private ArrayList<LinkedList<Cell>> adjList;
 	private int dimension, numOfCells;
 	private Stack<Integer> solutionPath;
-	private Map<Integer, Cell> dfsSolution;
+	private Map<Integer, Cell> dfsSolution, bfsSolution;
 	
 	/**
 	 * Creates the adjacency list for storing walls that get broken down
@@ -41,24 +42,26 @@ public class Maze
 		//printAdjList();
 //		String emptyGrid = printGrid(" ",null);
 //		System.out.println("Maze: \n"+emptyGrid);
-		solution = solveMazeDFS("");
-		String numberedGrid = printGrid(null,solution);
+//		solution = solveMazeDFS("");
+//		String numberedGrid = printGrid(null,solution);
 //		System.out.println("DFS: \n"+numberedGrid);
-		solutionShort = solveMazeDFS("shortest");
-		String shortestGrid = printGrid("#",solutionShort);
+//		solutionShort = solveMazeDFS("shortest");
+//		String shortestGrid = printGrid("#",solutionShort);
 //		System.out.println(shortestGrid);
-		String summary = printSolutionSummary(solution,null);
-		fh.writeToFile("Results"+size+"x"+size, "DFS:\n"+numberedGrid, shortestGrid, summary);
+//		String summary = printSolutionSummary(solution,null);
+//		fh.writeToFile("Results"+size+"x"+size, "DFS:\n"+numberedGrid, shortestGrid, summary);
 		
 		
 		dfsSolution = solveMazeDFS("DFS");
+		bfsSolution = solveMazeBFS();
 		solutionPath = new Stack<Integer>();
 		setSolutionPath();
 		printInitialMaze();
 		printDFS();
+		printBFS();
 		printShortestPath();
 	}
-
+	
 	private void setSolutionPath() {
 		int currentID = numOfCells - 1; //starting at ending cell
 		while(currentID != -1) { //traverse the path backwards through the parents of each cell
@@ -137,6 +140,69 @@ public class Maze
 				currentCell = cellStack.pop();
 			}
 		}
+		return sol;
+	}
+	
+	
+
+	/**
+	 * Solves the maze using breadth first search (right, down, left, up)
+	 * @return a map of all the cells visited in BFS and their order
+	 */
+	public Map<Integer, Cell> solveMazeBFS() {
+		Map<Integer,Cell> sol = new TreeMap<Integer,Cell>();
+		Cell currentCell = adjList.get(0).getFirst();
+		Queue<Cell> cellQueue = new LinkedList<Cell>();;
+		Cell nextCell = null;
+		int order = 0;
+		
+		cellQueue.add(currentCell);
+		sol.put(order++,currentCell);
+		
+		while(currentCell.getCellNum() != numOfCells-1) //maze not solved
+		{
+			if(currentCell.getX() +1 < dimension //something exists to the right
+					&& adjList.get(currentCell.getCellNum()+1).contains(currentCell) //they are connected
+					&& !sol.containsValue(adjList.get(currentCell.getCellNum()+1).getFirst())) //not visited before
+			{
+				nextCell = adjList.get(currentCell.getCellNum()+1).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
+				cellQueue.add(nextCell);
+				sol.put(order++,nextCell);
+			}
+			if(currentCell.getY() +1 < dimension //something exists below
+					&& adjList.get(currentCell.getCellNum()+dimension).contains(currentCell) //they are connected
+					&& !sol.containsValue(adjList.get(currentCell.getCellNum()+dimension).getFirst())) //not visited before
+			{
+				nextCell = adjList.get(currentCell.getCellNum()+dimension).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
+				cellQueue.add(nextCell);
+				sol.put(order++,nextCell);
+			}
+			if(currentCell.getX() -1 >= 0 //something exists to the left
+					&& adjList.get(currentCell.getCellNum()-1).contains(currentCell)
+					&& !sol.containsValue(adjList.get(currentCell.getCellNum()-1).getFirst())) //not visited before
+			{
+				nextCell = adjList.get(currentCell.getCellNum()-1).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
+				cellQueue.add(nextCell);
+				sol.put(order++,nextCell);
+			}
+			if(currentCell.getY() -1 >= 0 //above
+					&& adjList.get(currentCell.getCellNum()-dimension).contains(currentCell)
+					&& !sol.containsValue(adjList.get(currentCell.getCellNum()-dimension).getFirst())) //not visited before
+			{
+				nextCell = adjList.get(currentCell.getCellNum()-dimension).getFirst();
+				nextCell.setParentNum(currentCell.getCellNum());
+				cellQueue.add(nextCell);
+				sol.put(order++,nextCell);
+			}
+			
+			cellQueue.poll();
+			currentCell = cellQueue.peek();
+	
+		}
+		
 		return sol;
 	}
 
@@ -247,6 +313,16 @@ public class Maze
 	*/
 	public void printDFS() {
 		System.out.println("DFS: \n"+printGrid(null,dfsSolution)); //will need to print to a file
+	}
+	
+	/*
+	 * Function: Interface method to print the maze and the nodes visited from the BFS
+	 * PRE: Maze generated
+	 * Post: None
+	 * Return: None
+	*/
+	public void printBFS() {
+		System.out.println("BFS: \n"+printGrid(null,bfsSolution)); //will need to print to a file
 	}
 	
 	/*
