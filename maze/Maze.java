@@ -43,13 +43,19 @@ public class Maze
 		solutionPath = new Stack<Integer>();
 		
 		setSolutionPath();	
-		System.out.println("Maze: \n" + getInitialMaze());
-		System.out.println("DFS: \n" + getDFSResult());
-		System.out.println("BFS: \n" + getBFSResult());
-		System.out.println("Shortest Path: \n" + getShortestPathView());
+//		for(int i=solutionPath.size()-1; i>=0; i--) {
+//			System.out.print(solutionPath.get(i) + " ");
+//		}
+//		System.out.println();
+//		System.out.println("Maze: \n" + getInitialMaze());
+//		System.out.println("DFS: \n" + getDFSResult());
+//		System.out.println("BFS: \n" + getBFSResult());
+//		System.out.println("Shortest Path: \n" + getShortestPath());
 		
 		writeResultsToFile(dfsSolution, bfsSolution, solutionPath);
 	}
+	
+	public ArrayList<LinkedList<Cell>> getAdjacencyList() { return adjList; }
 	
 	/**
 	 * Create a file for this maze containing the DFS and BFS solution with the shortest path, 
@@ -67,6 +73,12 @@ public class Maze
 		fh.writeToFile(printGrid(null,dfsSolution), dfsSummary, printGrid(null,bfsSolution), bfsSummary,printGrid("#",null));
 	}
 	
+	/*
+	 * Function: Places the cell Id of of the cells that make the shortest path from starting point to ending point
+	 * PRE: Maze was solved using BFS or DFS
+	 * POST: Stack containing cell Id with the starting cell Id at the top
+	 * Return: None
+	*/
 	private void setSolutionPath() {
 		int currentID = numOfCells - 1; //starting at ending cell
 		while(currentID != -1) { //traverse the path backwards through the parents of each cell
@@ -74,6 +86,8 @@ public class Maze
 			currentID = adjList.get(currentID).getFirst().getParentNum(); //traverse to parent cell
 		}
 	}
+	
+	public Stack<Integer> getSolutionPath() { return solutionPath; }
 	
 	/**
 	 * Solves the maze using depth first search (right, down, left, up)
@@ -328,7 +342,7 @@ public class Maze
 	 * Post: None
 	 * Return: None
 	*/
-	public String getShortestPathView() {
+	public String getShortestPath() {
 		return printGrid("#",null);
 	}
 	
@@ -350,7 +364,7 @@ public class Maze
 	 *  POST: None
 	 *  Return: String containing maze representation
 	*/
-	public String printGrid(String charInCell, Map<Integer,Cell> cellMap) {
+	private String printGrid(String charInCell, Map<Integer,Cell> cellMap) {
 		String grid = "";
 		int numOfDirections = 2; //number of wall directions to check.
 		int currentCellCount = 0;
