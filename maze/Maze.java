@@ -42,11 +42,11 @@ public class Maze
 		bfsSolution = solveMazeBFS();
 		solutionPath = new Stack<Integer>();
 		
-		setSolutionPath();
-		printInitialMaze();
-		printDFS();
-		printBFS();
-		printShortestPath();
+		setSolutionPath();	
+		System.out.println("Maze: \n" + getInitialMaze());
+		System.out.println("DFS: \n" + getDFSResult());
+		System.out.println("BFS: \n" + getBFSResult());
+		System.out.println("Shortest Path: \n" + getShortestPathView());
 		
 		writeResultsToFile(dfsSolution, bfsSolution, solutionPath);
 	}
@@ -292,33 +292,34 @@ public class Maze
 	}
 	
 	/*
-	 * Function: Interface method to print the initial view of the maze
+	 * Function: Interface method to retieve the initial view of the maze
 	 * PRE: Maze generated
 	 * Post: None
 	 * Return: None
 	*/
-	public void printInitialMaze() {
-		System.out.println("Maze: \n"+printGrid(" ",null));
+	public String getInitialMaze() {
+		return printGrid(" ",null);
 	}
 	
 	/*
-	 * Function: Interface method to print the maze and the nodes visited from the DFS
+	 * Function: Interface method to retrieve the maze and the nodes visited from the DFS
 	 * PRE: Maze generated
 	 * Post: None
 	 * Return: None
 	*/
-	public void printDFS() {
-		System.out.println("DFS: \n"+printGrid(null,dfsSolution));
+	public String getDFSResult() {
+		
+		return printGrid(null,dfsSolution);
 	}
 	
 	/*
-	 * Function: Interface method to print the maze and the nodes visited from the BFS
+	 * Function: Interface method to retrieve the maze and the nodes visited from the BFS
 	 * PRE: Maze generated
 	 * Post: None
 	 * Return: None
 	*/
-	public void printBFS() {
-		System.out.println("BFS: \n"+printGrid(null,bfsSolution)); //will need to print to a file
+	public String getBFSResult() {
+		return printGrid(null,bfsSolution);
 	}
 	
 	/*
@@ -327,8 +328,8 @@ public class Maze
 	 * Post: None
 	 * Return: None
 	*/
-	public void printShortestPath() {
-		System.out.println(printGrid("#",null)); //will need to print to a file
+	public String getShortestPathView() {
+		return printGrid("#",null);
 	}
 	
 	/*

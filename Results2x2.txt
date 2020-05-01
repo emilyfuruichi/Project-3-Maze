@@ -1,4 +1,4 @@
-DFS:
+DFS: 
 + +-+
 |0 1|
 + + +
@@ -12,5 +12,23 @@ DFS:
 +-+ +
 
 Path: (0,0) (1,0) (1,1) 
-Length of path: 
+Length of path: 3
 Visited cells: 3
+
+BFS:
++ +-+
+|0 1|
++ + +
+|2|3|
++-+ +
+
++ +-+
+|# #|
++ + +
+| |#|
++-+ +
+
+Path: (0,0) (1,0) (1,1) 
+Length of path: 3
+Visited cells: 4
+
