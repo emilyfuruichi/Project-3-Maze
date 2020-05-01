@@ -1,5 +1,6 @@
 /**
- * FileHandling class can write txt files.
+ * FileHandling class can write Strings to text files.
+ * It is used to save visual representations of solutions for Mazes.
  */
 
 package maze;
@@ -9,9 +10,11 @@ import java.io.PrintWriter;
 
 public class FileHandling 
 {
-	private int size;
+	private int size; //dimension of the maze
+	
 	/**
-	 * Constructor initializes any necessary values
+	 * Constructor initializes the size (dimension) of the maze
+	 * @param size the size to use
 	 */
 	public FileHandling(int size)
 	{
@@ -19,10 +22,13 @@ public class FileHandling
 	}
 	
 	/**
-	 * Creates a txt file populated with the given Strings
-	 * placing each string on a new line
-	 * @param name name to use for the created csv file
-	 * @param array to write to the created file
+	 * Creates a txt file populated with the given Strings placing each string on a new line
+	 * Files are named "Results" followed by the dimensions of the maze
+	 * @param dfs the depth first search solution illustrated in ASCII
+	 * @param dfsSummary a written description of the DFS solution
+	 * @param bfs the breadth first search solution illustrated in ASCII
+	 * @param bfsSummary a written description of the BFS solution
+	 * @param shortestGrid the shortest path solution illustrated in ASCII
 	 */
 	public void writeToFile(String dfs, String dfsSummary, String bfs, String bfsSummary, String shortestGrid)
 	{
