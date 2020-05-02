@@ -25,7 +25,7 @@ class TestMaze {
 	 * Function: Tests whether the maze generation creates the same "random" maze each time
 	 * 			 using varying maze sizes
 	 * PRE: None
-	 * POST: Maze generated 
+	 * POST: None
 	 * Note: This compares the ASCII output to test for correctness
 	*/
 	@Test
@@ -40,15 +40,32 @@ class TestMaze {
 				expected += scan.nextLine();
 				expected += "\n";
 			}
+			scan.close();
 			assertEquals(expected, testMaze.getInitialMaze());
 		}
+	}
+	
+
+	@Test
+	void testMazeGenerationDFSTrivialCase() throws IOException {
+		testMaze = new Maze(0);
+		testFile = new File("TestCases/TrivialTests/1x1TestMaze.txt");
+		Scanner scan = new Scanner(testFile);
+		String expected = "";
+		while(scan.hasNextLine()) {
+			expected += scan.nextLine();
+			expected += "\n";
+		}
+		scan.close();
+		assertEquals(expected, testMaze.getInitialMaze());
+		
 	}
 	
 	/*
 	 * Function: Tests whether the DFS traversed the maze in the correct order
 	 * 			 using varying maze sizes
-	 * PRE: Maze Generated
-	 * POST: Visited cells marked with their visit order number
+	 * PRE: None
+	 * POST: None
 	 * Note: This compares the ASCII output to test for correctness
 	*/
 	@Test
@@ -67,11 +84,27 @@ class TestMaze {
 		}
 	}
 	
+	
+	@Test
+	void testSolveMazeDFSTrivialCase() throws IOException {
+		testMaze = new Maze(0);
+		testFile = new File("TestCases/TrivialTests/1x1DFSTestMaze.txt");
+		Scanner scan = new Scanner(testFile);
+		String expected = "";
+		while(scan.hasNextLine()) {
+			expected += scan.nextLine();
+			expected += "\n";
+		}
+		scan.close();
+		assertEquals(expected, testMaze.getDFSResult());
+		
+	}
+	
 	/*
 	 * Function: Tests whether the BFS traversed the maze in the correct order
 	 * 			 using varying maze sizes
-	 * PRE: Maze Generated
-	 * POST: Visited cells marked with their visit order number
+	 * PRE: None
+	 * POST: None
 	 * Note: This compares the ASCII output to test for correctness
 	*/
 	@Test
@@ -86,8 +119,24 @@ class TestMaze {
 				expected += scan.nextLine();
 				expected += "\n";
 			}
+			scan.close();
 			assertEquals(expected, testMaze.getBFSResult());
 		}
+	}
+	
+	@Test
+	void testSolveMazeFFSTrivialCase() throws IOException {
+		testMaze = new Maze(0);
+		testFile = new File("TestCases/TrivialTests/1x1BFSTestMaze.txt");
+		Scanner scan = new Scanner(testFile);
+		String expected = "";
+		while(scan.hasNextLine()) {
+			expected += scan.nextLine();
+			expected += "\n";
+		}
+		scan.close();
+		assertEquals(expected, testMaze.getBFSResult());
+		
 	}
 	
 	/*
@@ -108,8 +157,24 @@ class TestMaze {
 				expected += scan.nextLine();
 				expected += "\n";
 			}
+			scan.close();
 			assertEquals(expected, testMaze.getShortestPath());
 		}
+	}
+	
+	@Test
+	void testShortestPathTrivialCase() throws IOException {
+		testMaze = new Maze(0);
+		testFile = new File("TestCases/TrivialTests/1x1PathTestMaze.txt");
+		Scanner scan = new Scanner(testFile);
+		String expected = "";
+		while(scan.hasNextLine()) {
+			expected += scan.nextLine();
+			expected += "\n";
+		}
+		scan.close();
+		assertEquals(expected, testMaze.getShortestPath());
+		
 	}
 
 	/*
@@ -154,6 +219,18 @@ class TestMaze {
 	*/
 	@Test
 	void testNoIsolationCondition() {
+		for(int i : GRID_SIZE)
+		{
+			testMaze = new Maze(i);
+			for(LinkedList<Cell> v : testMaze.getAdjacencyList())
+			{
+				assertTrue(v.size() > 1);
+			}
+		}
+	}
+	
+	@Test
+	void testCreateWallMaze() {
 		for(int i : GRID_SIZE)
 		{
 			testMaze = new Maze(i);

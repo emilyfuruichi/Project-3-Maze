@@ -18,7 +18,8 @@ import java.util.Random;
 public class Maze 
 {
 	private ArrayList<LinkedList<Cell>> adjList;
-	private int dimension, numOfCells;
+	private int dimension = 1;
+	private int numOfCells;
 	private Stack<Integer> solutionPath;
 	private Map<Integer, Cell> dfsSolution, bfsSolution;
 	
@@ -32,25 +33,18 @@ public class Maze
 	public Maze(int size)
 	{
 		adjList = new ArrayList<LinkedList<Cell>>(); //adjacency list, the first node of each contains that cell's info
-		dimension = size;
-		numOfCells = (int) Math.pow(size, 2);
+		if(size>1)
+			dimension = size;
+		numOfCells = (int) Math.pow(dimension, 2);
 		
 		createAllWalledMaze();
 		mazeGenerationDFS();		
 		
 		dfsSolution = solveMazeDFS();
 		bfsSolution = solveMazeBFS();
-		solutionPath = new Stack<Integer>();
 		
+		solutionPath = new Stack<Integer>();
 		setSolutionPath();	
-//		for(int i=solutionPath.size()-1; i>=0; i--) {
-//			System.out.print(solutionPath.get(i) + " ");
-//		}
-//		System.out.println();
-//		System.out.println("Maze: \n" + getInitialMaze());
-//		System.out.println("DFS: \n" + getDFSResult());
-//		System.out.println("BFS: \n" + getBFSResult());
-//		System.out.println("Shortest Path: \n" + getShortestPath());
 		
 		writeResultsToFile(dfsSolution, bfsSolution, solutionPath);
 	}

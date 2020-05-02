@@ -14,6 +14,7 @@ public class MazeTester
 			System.out.println("Printing maze ("+i+"x"+i+"):");
 			maze = new Maze(i);
 		}
+		Maze maze1 = new Maze(-20);
 	//change
 	}
 }
