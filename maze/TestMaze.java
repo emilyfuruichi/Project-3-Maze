@@ -1,3 +1,8 @@
+/**
+ * JUnit tester for Project 3 Maze code
+ * Tests the generation of a perfect maze and DFS and BFS solutions
+ */
+
 package maze;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,13 +18,9 @@ import org.junit.jupiter.api.Test;
 
 class TestMaze {
 
-	private Maze testMaze;
-	private static final int[] GRID_SIZE = {4,5,6,7,8,10};
-	File testFile;
-	@BeforeEach
-	void setUp() throws Exception {
-		
-	}
+	private Maze testMaze; //creates a maze
+	private static final int[] GRID_SIZE = {4,5,6,7,8,10}; //contains the list of different maze sizes to test
+	File testFile; //file to test against i.e. solution key
 
 	/*
 	 * Function: Tests whether the maze generation creates the same "random" maze each time
