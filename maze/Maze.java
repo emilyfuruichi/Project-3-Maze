@@ -17,39 +17,45 @@ import java.util.Random;
 
 public class Maze 
 {
-	private ArrayList<LinkedList<Cell>> adjList;
-	private int dimension = 1;
-	private int numOfCells;
-	private Stack<Integer> solutionPath;
-	private Map<Integer, Cell> dfsSolution, bfsSolution;
+	private ArrayList<LinkedList<Cell>> adjList; //adjacency list for the maze
+	private int dimension = 1; //dimension of the maze set by constructor or default of 1
+	private int numOfCells; //the total number of cells in the maze (size^2)
+	private Stack<Integer> solutionPath; //the shortest solution path
+	private Map<Integer, Cell> dfsSolution, bfsSolution; //the bfs and dfs solutions respectively
 	
 	/**
 	 * Creates the adjacency list for storing walls that get broken down
 	 * an the arraylist of linked lists represents a list of cells with each
 	 * inner list representing all the open walls available in that cell to
-	 * other cells
+	 * other cells. The front of each list contains the cell at that position
+	 * for easy access to its attributes.
 	 * @param size is the number of cells across and down the maze
 	 */
 	public Maze(int size)
 	{
-		adjList = new ArrayList<LinkedList<Cell>>(); //adjacency list, the first node of each contains that cell's info
+		adjList = new ArrayList<LinkedList<Cell>>();
 		if(size>1)
 			dimension = size;
 		numOfCells = (int) Math.pow(dimension, 2);
 		
 		createAllWalledMaze();
 		mazeGenerationDFS();		
-		
 		dfsSolution = solveMazeDFS();
 		bfsSolution = solveMazeBFS();
-		
 		solutionPath = new Stack<Integer>();
 		setSolutionPath();	
 		
 		writeResultsToFile(dfsSolution, bfsSolution, solutionPath);
 	}
 	
-	public ArrayList<LinkedList<Cell>> getAdjacencyList() { return adjList; }
+	/**
+	 * Get the adjacency list for analysis
+	 * @return current adjacency list
+	 */
+	public ArrayList<LinkedList<Cell>> getAdjacencyList() 
+	{ 
+		return adjList; 
+	}
 	
 	/**
 	 * Create a file for this maze containing the DFS and BFS solution with the shortest path, 
@@ -81,7 +87,14 @@ public class Maze
 		}
 	}
 	
-	public Stack<Integer> getSolutionPath() { return solutionPath; }
+	/**
+	 * Gets the solution path
+	 * @return solution path
+	 */
+	public Stack<Integer> getSolutionPath() 
+	{ 
+		return solutionPath; 
+	}
 	
 	/**
 	 * Solves the maze using depth first search (right, down, left, up)
@@ -90,17 +103,18 @@ public class Maze
 	 */
 	private Map<Integer,Cell> solveMazeDFS() 
 	{
-		Map<Integer,Cell> sol = new TreeMap<Integer,Cell>();
-		Cell currentCell = adjList.get(0).getFirst();
-		Stack<Cell> cellStack = new Stack<Cell>();
-		Cell nextCell = null;
-		int order = 0;
+		Map<Integer,Cell> sol = new TreeMap<Integer,Cell>(); //the solution to build and return
+		Cell currentCell = adjList.get(0).getFirst(); //cell currently being examined
+		Stack<Cell> cellStack = new Stack<Cell>(); //stack of cells visited
+		Cell nextCell = null; //neighbor cell to move to next
+		int order = 0; //the visitation order, incremented as the solution is built
 		
 		cellStack.push(currentCell);
 		sol.put(order++,currentCell);
 		
-		while(currentCell.getCellNum() != numOfCells-1) //while maze not solved
+		while(currentCell.getCellNum() != numOfCells-1) //while maze is not solved
 		{
+			//choose the next available valid neighbor cell and move in to it
 			if(currentCell.getX() +1 < dimension //something exists to the right
 					&& adjList.get(currentCell.getCellNum()+1).contains(currentCell) //they are connected
 					&& !sol.containsValue(adjList.get(currentCell.getCellNum()+1).getFirst())) //not visited before
@@ -156,11 +170,11 @@ public class Maze
 	 * @return a map of all the cells visited in BFS and their order
 	 */
 	public Map<Integer, Cell> solveMazeBFS() {
-		Map<Integer,Cell> sol = new TreeMap<Integer,Cell>();
-		Cell currentCell = adjList.get(0).getFirst();
-		Queue<Cell> cellQueue = new LinkedList<Cell>();;
-		Cell nextCell = null;
-		int order = 0;
+		Map<Integer,Cell> sol = new TreeMap<Integer,Cell>(); //solution building and to be returned
+		Cell currentCell = adjList.get(0).getFirst(); //cell currently in
+		Queue<Cell> cellQueue = new LinkedList<Cell>(); //queue of visited cells
+		Cell nextCell = null; //neighbor cell to move to next
+		int order = 0; //the visitation order, incremented as the solution is built
 		
 		cellQueue.add(currentCell);
 		sol.put(order++,currentCell);
@@ -228,54 +242,54 @@ public class Maze
 	}
 	
 	/**
-	 * Using the depth first search pseudocode given on pg2 of assignment as a guide
-	 * a perfect maze is generated with all cells reachable and unnecessary open walls
+	 * Using the depth first search a perfect maze is generated 
+	 * with all cells reachable and no unnecessary open walls 
+	 * or cycles.
 	 */
 	public void mazeGenerationDFS()
 	{
-		int totalCells = numOfCells-1;
-		Random rand = new Random(0);
-		Cell currentCell = adjList.get((int)(rand.nextDouble() * totalCells)).getFirst();
-		ArrayList<Cell> neighborCells;
-		int neighborCount;
-		Stack<Cell> cellStack = new Stack<Cell>();
-		int visitedCells = 0;
+		Random rand = new Random(0); //random seed, necessary to create testable cases
+		Cell currentCell = adjList.get((int)(rand.nextDouble() * numOfCells-1)).getFirst(); //cell currently in
+		ArrayList<Cell> neighborCells; //list of valid neighbors with which walls can be broken down
+		int neighborCount; //the number of valid neighbors with which walls can be broken down
+		Stack<Cell> cellStack = new Stack<Cell>(); //stack of visited cells
+		int visitedCells = 0; //current visitation number
 		
 		cellStack.push(currentCell);
 		
-		while(visitedCells < totalCells)
+		while(visitedCells < numOfCells-1)
 		{
 			//find all neighbors of currentCell with all walls intact
 			neighborCells = new ArrayList<Cell>();
 			neighborCount = 0;
 			
-			if(currentCell.getY() -1 >= 0) //above
+			if(currentCell.getY() -1 >= 0) //cell possible above
 			{
-				if(adjList.get(currentCell.getCellNum()-dimension).size() <= 1)
+				if(adjList.get(currentCell.getCellNum()-dimension).size() <= 1) //check if cell is connected
 				{
 					neighborCells.add(adjList.get(currentCell.getCellNum()-dimension).getFirst());
 					neighborCount++;
 				}
 			}
-			if(currentCell.getX() +1 < dimension) //right
+			if(currentCell.getX() +1 < dimension) //cell possible right
 			{
-				if(adjList.get(currentCell.getCellNum()+1).size() <= 1)
+				if(adjList.get(currentCell.getCellNum()+1).size() <= 1) //check if cell is connected
 				{
 					neighborCells.add(adjList.get(currentCell.getCellNum()+1).getFirst());
 					neighborCount++;
 				}
 			}
-			if(currentCell.getY() +1 < dimension) //below
+			if(currentCell.getY() +1 < dimension) //cell possible below
 			{
-				if(adjList.get(currentCell.getCellNum()+dimension).size() <= 1)
+				if(adjList.get(currentCell.getCellNum()+dimension).size() <= 1) //check if cell is connected
 				{
 					neighborCells.add(adjList.get(currentCell.getCellNum()+dimension).getFirst());
 					neighborCount++;
 				}
 			}
-			if(currentCell.getX() -1 >= 0) //left
+			if(currentCell.getX() -1 >= 0) //cell possible left
 			{
-				if(adjList.get(currentCell.getCellNum()-1).size() <= 1)
+				if(adjList.get(currentCell.getCellNum()-1).size() <= 1) //check if cell is connected
 				{
 					neighborCells.add(adjList.get(currentCell.getCellNum()-1).getFirst());
 					neighborCount++;
@@ -291,7 +305,7 @@ public class Maze
 				currentCell = neighborCells.get(random);
 				visitedCells++;
 			}
-			else
+			else //no more possible openings for this cell, go back
 			{
 				currentCell = cellStack.pop();
 			}
@@ -475,7 +489,6 @@ public class Maze
 	 * Return: if found, true
 	 * 			else false
 	*/
-	
 	public boolean hasNeighbor(int x, int y, LinkedList<Cell> list) {
 		
 		for( Cell v : list) { //traverse through each cell
