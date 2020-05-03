@@ -1,5 +1,7 @@
 /**
- * Cell contains the coordinates and cell number for each cell of a maze
+ * Cell contains location and associated information for each cell of a maze
+ * these attributes are used to determine the cell's location and how it interacts
+ * with the maze as a whole
  */
 
 package maze;
@@ -73,6 +75,15 @@ public class Cell
 		return "["+cellNum+"]";
 	}
 	
+	/**
+	 * sets the parent number for backtracking later
+	 * @param parID parent number
+	 */
 	public void setParentNum(int parID) { parentNum = parID; }
+	
+	/**
+	 * gets the parent number
+	 * @return parent number
+	 */
 	public int getParentNum() { return parentNum; }
 }
