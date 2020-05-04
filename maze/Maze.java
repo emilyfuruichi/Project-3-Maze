@@ -249,7 +249,7 @@ public class Maze
 	public void mazeGenerationDFS()
 	{
 		Random rand = new Random(0); //random seed, necessary to create testable cases
-		Cell currentCell = adjList.get((int)(rand.nextDouble() * numOfCells-1)).getFirst(); //cell currently in
+		Cell currentCell = adjList.get((int)(rand.nextDouble() * (numOfCells-1))).getFirst(); //cell currently in
 		ArrayList<Cell> neighborCells; //list of valid neighbors with which walls can be broken down
 		int neighborCount; //the number of valid neighbors with which walls can be broken down
 		Stack<Cell> cellStack = new Stack<Cell>(); //stack of visited cells
